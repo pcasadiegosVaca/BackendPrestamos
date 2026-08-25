@@ -34,9 +34,10 @@ public Map<String, Object> createUser(UserDto userDto) {
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         userEntity.setPassword(encodedPassword);
         repository.save(userEntity);
-        jwtService.generarToken(userDto.getCorreo()); // Genera un token JWT para el usuario recién creado
+        String token = jwtService.generarToken(userDto.getCorreo()); // Genera un token JWT para el usuario recién creado
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Usuario creado exitosamente desde el service");
+        response.put("token", token);
         return response;
     }
     public Map<String, Object> saveUser(UserDto userDto) {

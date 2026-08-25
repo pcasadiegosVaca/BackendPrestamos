@@ -13,7 +13,8 @@ import java.util.Map;
 public class JwtService {
 
     // Genera una llave segura temporal para firmar tus tokens
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+// Cambia Key por SecretKey (Asegúrate de importar javax.crypto.SecretKey)
+public static final javax.crypto.SecretKey SECRET_KEY = io.jsonwebtoken.security.Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
     // Tiempo de vida del token: 1 día en milisegundos
     private static final long EXPIRATION_TIME = 86400000; 
 

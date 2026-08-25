@@ -28,9 +28,7 @@ public class PrestamosController {
 
         Map<String, Object> response =  new java.util.HashMap<>();
         response = service.savePrestamoUser(prestamoDto);
-
-        //response.put("message", "Prestamo creado exitosamente");
-
+        
         return response;
     }
     @PatchMapping("/actualizar")
