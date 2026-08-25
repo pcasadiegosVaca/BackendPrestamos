@@ -22,6 +22,8 @@ public class PrestamoUserService {
         PretamoUser pretamoUserEntity = new PretamoUser();
         pretamoUserEntity.setMonto(prestamoUser.getMonto());
         pretamoUserEntity.setPlazoDate(prestamoUser.getPlazoDate());
+        pretamoUserEntity.setStatus("PENDING");
+
         // Mapear los campos del DTO a la entidad
         Repository.save(pretamoUserEntity);
         Map<String, Object> response = new java.util.HashMap<>();
@@ -33,6 +35,14 @@ public class PrestamoUserService {
         // Lógica para actualizar un préstamo
         Map<String, Object> response = new java.util.HashMap<>();
         PretamoUser pretamoUserEntity = new PretamoUser();
+        if (status.getStatus() == null || status.getStatus().isEmpty()) {
+            response.put("error", "El estado no puede estar vacío");
+            return response;
+        }
+        if (!status.getStatus().equals("PENDING") && !status.getStatus().equals("APPROVED") && !status.getStatus().equals("REJECTED")) {
+            response.put("error", "Estado inválido. Debe ser PENDING, APPROVED o REJECTED");
+            return response;
+        }
         pretamoUserEntity.setStatus(status.getStatus());
         Repository.save(pretamoUserEntity);
         // Aquí puedes implementar la lógica de actualización según tus necesidades

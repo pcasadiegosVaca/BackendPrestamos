@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.example.BackendPrestamos.repository.UserRegistroRepository;
+import com.example.BackendPrestamos.config.JwtService;
 import com.example.BackendPrestamos.dto.UserDto;
 import com.example.BackendPrestamos.entity.UserRegistro;
 
@@ -24,7 +25,20 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-
+public Map<String, Object> createUser(UserDto userDto) {
+        UserRegistro userEntity = new UserRegistro();
+        userEntity.setNombre(userDto.getNombre());
+        userEntity.setApellido(userDto.getApellido());
+        userEntity.setCorreo(userDto.getCorreo());
+        // Cifrar la contraseña antes de guardarla
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        userEntity.setPassword(encodedPassword);
+        repository.save(userEntity);
+        jwtService.generarToken(userDto.getCorreo()); // Genera un token JWT para el usuario recién creado
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Usuario creado exitosamente desde el service");
+        return response;
+    }
     public Map<String, Object> saveUser(UserDto userDto) {
         UserRegistro userEntity = new UserRegistro();
         userEntity.setNombre(userDto.getNombre());

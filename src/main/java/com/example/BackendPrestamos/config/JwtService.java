@@ -1,4 +1,4 @@
-package com.example.BackendPrestamos.service;
+package com.example.BackendPrestamos.config;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,5 +28,6 @@ public class JwtService {
                 .signWith(SECRET_KEY)
                 .compact();
     }
+    
 }
 

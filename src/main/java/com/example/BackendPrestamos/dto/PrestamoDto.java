@@ -11,7 +11,6 @@ import lombok.Setter;
 public class PrestamoDto {
     
     private long id_user;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate plazoDate;
     private long monto;

@@ -20,11 +20,11 @@ public class ControllerUser {
 
 
     @PostMapping("/crear")
-    public Map<String, Object> crearPrestamo(@RequestBody UserDto userDto) {
+    public Map<String, Object> crearUsuario(@RequestBody UserDto userDto) {
 
         // Lógica para crear un préstamo
         Map<String, Object> response = new java.util.HashMap<>();
-        response = service.saveUser(userDto);
+        response = service.createUser(userDto);
         return response;
     }
 
