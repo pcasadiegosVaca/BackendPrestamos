@@ -22,4 +22,5 @@ public class UserRegistro {
     private String apellido;
     private String correo;
     private String password;
+    private String role; // Campo para el rol del usuario
 }

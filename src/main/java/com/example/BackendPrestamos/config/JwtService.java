@@ -1,10 +1,12 @@
-package com.example.BackendPrestamos.service;
+package com.example.BackendPrestamos.config;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +14,13 @@ import java.util.Map;
 @Service // <-- Esta etiqueta hace que Spring reconozca la clase
 public class JwtService {
 
-    // Genera una llave segura temporal para firmar tus tokens
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    // La misma clave debe usarse para firmar y validar durante toda la ejecucion.
+    public static javax.crypto.SecretKey SECRET_KEY;
+
+    public JwtService(@Value("${jwt.secret}") String secret) {
+        SECRET_KEY = io.jsonwebtoken.security.Keys.hmacShaKeyFor(
+                Base64.getDecoder().decode(secret));
+    }
     // Tiempo de vida del token: 1 día en milisegundos
     private static final long EXPIRATION_TIME = 86400000; 
 
@@ -28,5 +35,6 @@ public class JwtService {
                 .signWith(SECRET_KEY)
                 .compact();
     }
+    
 }
 

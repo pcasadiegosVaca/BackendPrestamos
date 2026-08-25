@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.example.BackendPrestamos.entity.UserRegistro;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRegistroRepository extends JpaRepository<UserRegistro, Long> {
-
+  Optional<UserRegistro> findByCorreo(String correo); 
 }

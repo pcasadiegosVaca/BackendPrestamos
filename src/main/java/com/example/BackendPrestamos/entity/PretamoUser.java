@@ -19,6 +19,7 @@ public class PretamoUser {
     private Long id_user;
     private Long Monto;
     private LocalDate PlazoDate;
+    private String correo;
     private String status;
 
 }
