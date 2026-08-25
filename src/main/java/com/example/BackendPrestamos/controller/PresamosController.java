@@ -7,35 +7,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PatchMapping;
-import com.example.BackendPrestamos.dto.EditarStatus;
 
 import com.example.BackendPrestamos.dto.PrestamoDto;
+import com.example.BackendPrestamos.dto.EditarStatus;
 import com.example.BackendPrestamos.service.PrestamoUserService;
 
 @RestController
 @RequestMapping("/prestamos")
-public class PrestamosController {
+public class PresamosController {
     private final PrestamoUserService service;
 
-    public PrestamosController(PrestamoUserService prestamoUserService) {
+    public PresamosController(PrestamoUserService prestamoUserService) {
         this.service = prestamoUserService;
     }
 
     @PostMapping("/crear")
     public Map<String, Object> crearPrestamo(@RequestBody PrestamoDto prestamoDto) {
         // Lógica para crear un préstamo
-       
 
-        Map<String, Object> response =  new java.util.HashMap<>();
-        response = service.savePrestamoUser(prestamoDto);
-        
+        Map<String, Object> response = service.savePrestamoUser(prestamoDto);
+
         return response;
     }
+
     @PatchMapping("/actualizar")
     public Map<String, Object> actualizarPrestamo(@RequestBody EditarStatus status) {
-        // Lógica para actualizar un préstamo
-        Map<String, Object> response = new java.util.HashMap<>();
-        response = service.updatePrestamoUser(status);
-        return response;
+        // La ruta permanece protegida por JWT en SecurityConfig.
+        return service.updatePrestamoUser(status);
     }
 }

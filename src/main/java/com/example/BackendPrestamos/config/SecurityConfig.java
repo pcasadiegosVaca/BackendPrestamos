@@ -28,7 +28,12 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/user/crear").permitAll() // Público
+                .requestMatchers("/user/login").permitAll() // Público
                 .requestMatchers("/prestamos/crear").authenticated() // Requiere token
+                .requestMatchers("/prestamos/actualizar").authenticated() // Requiere token BuscarTodos
+                .requestMatchers("/user/actualizar").authenticated() // Alias de actualizacion para Postman
+                .requestMatchers("/user/BuscarTodos").permitAll() // Requiere token BuscarTodos
+
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

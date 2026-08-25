@@ -1,6 +1,5 @@
 package com.example.BackendPrestamos.config;
 
-import com.example.BackendPrestamos.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
+import com.example.BackendPrestamos.config.JwtService;
 
 @Component
 public class FiltrosDeautenticacion extends OncePerRequestFilter {
