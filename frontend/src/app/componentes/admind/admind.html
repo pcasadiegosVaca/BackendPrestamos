@@ -1,0 +1,30 @@
+<router-outlet>
+  <div class="min-h-screen w-full bg-slate-50 flex justify-center items-start p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl border border border-gray-50 shadow-sm p-6 md:p-2 mt-8">
+
+    <h4>Hola, Administrador</h4>
+
+      <div class="w-full max-w-md bg-white rounded-2xl border border-gray-300 p-6 md:p-6 shadow-sm mt-8">
+        <h5>Gestionar Prestamos</h5>
+        <!-- aqui debo listar todos los prestamos de diferentes usuarios-->
+        <div>
+          <h3>Usuario: usuario@test.com - Monto $ 1000 - Estado: Pendiente</h3>
+          <div class="flex flex-row">
+            <div class="md:p-2 mt-1">
+                <button
+              class="w-full mt-2 py-2.5 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              (click)="goToAprove()">Aprobar</button>
+            </div>
+            <div class="md:p-2 mt-1">
+              <button
+              class="w-full mt-2 py-2.5 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              (click)="goToReject()">Rechazar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</router-outlet>
