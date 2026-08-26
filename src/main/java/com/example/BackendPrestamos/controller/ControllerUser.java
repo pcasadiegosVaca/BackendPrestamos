@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import com.example.BackendPrestamos.dto.EditarStatus;
 import com.example.BackendPrestamos.service.PrestamoUserService;
+import org.springframework.web.bind.annotation.PatchMapping;
+
 
 @RestController
 @RequestMapping("/user")
 public class ControllerUser {
 
     private final UserService service;
-    private final PrestamoUserService prestamoUserService;
 
-    ControllerUser(UserService Userservice, PrestamoUserService prestamoUserService) {
+    ControllerUser(UserService Userservice) {
         this.service = Userservice;
-        this.prestamoUserService = prestamoUserService;
     }
 
 
@@ -31,29 +31,40 @@ public class ControllerUser {
     public Map<String, Object> crearUsuario(@RequestBody UserDto userDto) {
 
         // Lógica para crear un préstamo
-        Map<String, Object> response = new java.util.HashMap<>();
-        response = service.createUser(userDto);
-        return response;
+        try {
+            Map<String, Object> response = service.createUser(userDto);
+            response.put("message", "Usuario creado exitosamente");
+            return response;
+        } catch (Exception e) {
+            // Manejo de errores y mapeo a una respuesta HTTP adecuada
+            return ErrorHttp.mapearError(e).getBody();
+        }
+
     }
     @PostMapping("/login")
     public Map<String, Object> loginUsuario(@RequestBody LoginDto userDto) {
-        // Lógica para crear un préstamo
-        Map<String, Object> response = new java.util.HashMap<>();
-        response = service.loginUser(userDto);
-        return response;
+       try {
+            Map<String, Object> response = service.loginUser(userDto);
+            response.put("message", "Usuario logueado exitosamente");
+            return response;
+        } catch (Exception e) {
+            // Manejo de errores y mapeo a una respuesta HTTP adecuada
+            return ErrorHttp.mapearError(e).getBody();
+        }
     }
     @GetMapping("/BuscarTodos")
     public Map<String, Object> ObtenerTodosLosusuarios() {
-        Map<String, Object> response = new java.util.HashMap<>();
-        response = service.getUserByAll();
-        return response;
+        try {
+            Map<String, Object> response = service.getUserByAll();
+            response.put("message", "Usuarios obtenidos exitosamente");
+            return response;
+        } catch (Exception e) {
+            // Manejo de errores y mapeo a una respuesta HTTP adecuada
+            return ErrorHttp.mapearError(e).getBody();
+        }
     }
 
-    @PatchMapping("/actualizar")
-    public Map<String, Object> actualizarPrestamo(@RequestBody EditarStatus status) {
-        // Este alias conserva compatibilidad con clientes que usan /user/actualizar.
-        return prestamoUserService.updatePrestamoUser(status);
-    }
+
 
 
 }
