@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EditarStatus {
+    private Long idPrestamo;
     private String correo_user;
     private String role;
     private String status;

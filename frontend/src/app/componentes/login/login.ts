@@ -29,31 +29,44 @@ export class Login {
       password: this.password
     };
 
-    // 2. Hacemos la petición POST de autenticación
+// ... Todo el inicio de tu clase se mantiene igual ...
+
     this.http.post<any>('http://localhost:8080/user/login', body).subscribe({
       next: (loginResponse) => {
         console.log('Login exitoso:', loginResponse);
 
-        // 3. Guardamos los datos de sesión iniciales
+        // Guardamos token y usuario en el servicio
         this.authService.setToken(loginResponse.token);
         this.authService.setUser(loginResponse.user);
+        this.authService.setIdUser(loginResponse.id);
 
-        // DINÁMICO: Si el backend te devuelve el id del usuario en la respuesta del login,
-        // úsalo directamente en lugar de dejar el número 1 fijo:
-        const idUsuario = loginResponse.user?.id || 1;
+        const idUsuario = loginResponse.id;
+
         const tokenReal = loginResponse.token;
+
         const headers = new HttpHeaders({
           'Authorization': `Bearer ${tokenReal}`
         });
-        // 4. Consultamos los préstamos usando el ID obtenido
-        this.http.get<any>(`http://localhost:8080/user/buscarpretamos/${idUsuario}`, { headers }).subscribe({
+
+        this.http.get<any>(`http://localhost:8080/prestamos/buscarpretamos/${idUsuario}`, { headers }).subscribe({
           next: (prestamoResponse) => {
             console.log('¡Préstamos descargados con token!:', prestamoResponse);
-            this.authService.setPrestamos(prestamoResponse.data);
 
-            this.router.navigate(['/user']);
+
+            this.authService.setPrestamos(prestamoResponse.data);
+            if(this.authService.obtenerRolDesdeToken() === 'ADMIN'){
+              alert(this.authService.obtenerRolDesdeToken());
+
+              this.router.navigate(['/admind']);
+            }else{
+              alert(this.authService.obtenerRolDesdeToken());
+
+              this.router.navigate(['/user']);
+
+            }
           },
           error: (err) => {
+
             console.error('Error en el GET (revisa si el token expiró o la ruta cambió):', err);
             this.router.navigate(['/user']);
           }
@@ -63,6 +76,6 @@ export class Login {
         console.error('Error en el login:', err);
         alert('Credenciales incorrectas o error en el servidor');
       }
-    }); // Cierre del subscribe de login
+    });
   }
 }

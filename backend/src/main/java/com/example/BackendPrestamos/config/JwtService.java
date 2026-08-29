@@ -1,15 +1,14 @@
 package com.example.BackendPrestamos.config;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
-import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import io.jsonwebtoken.Jwts;
 
 @Service // <-- Esta etiqueta hace que Spring reconozca la clase
 public class JwtService {
@@ -24,8 +23,10 @@ public class JwtService {
     // Tiempo de vida del token: 1 día en milisegundos
     private static final long EXPIRATION_TIME = 86400000; 
 
-    public String generarToken(String email) {
+    public String generarToken(String email,String role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role); 
+
         
         return Jwts.builder()
                 .setClaims(claims)

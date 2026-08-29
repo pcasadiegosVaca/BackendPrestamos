@@ -1,18 +1,17 @@
 package com.example.BackendPrestamos.service;
 
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import com.example.BackendPrestamos.repository.UserRegistroRepository;
-import com.example.BackendPrestamos.config.JwtService;
-import com.example.BackendPrestamos.dto.UserDto;
-import com.example.BackendPrestamos.entity.UserRegistro;
-import com.example.BackendPrestamos.dto.LoginDto;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.example.BackendPrestamos.config.JwtService;
+import com.example.BackendPrestamos.dto.LoginDto;
+import com.example.BackendPrestamos.dto.UserDto;
+import com.example.BackendPrestamos.entity.UserRegistro;
+import com.example.BackendPrestamos.repository.UserRegistroRepository;
 @Service
 public class UserService {
     @Autowired
@@ -39,7 +38,8 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         userEntity.setPassword(encodedPassword);
         repository.save(userEntity);
-        String token = jwtService.generarToken(userDto.getCorreo()); // Genera un token JWT para el usuario recién creado
+        
+        String token = jwtService.generarToken(userDto.getCorreo(),userDto.getRole()); // Genera un token JWT para el usuario recién creado
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Usuario creado exitosamente desde el service");
         response.put("token", token);
@@ -63,10 +63,12 @@ public class UserService {
             return response;
         }
         // Generar un token JWT para el usuario autenticado
-        String token = jwtService.generarToken(usuario.getCorreo());
+        String token = jwtService.generarToken(usuario.getCorreo(),usuario.getRole());
         response.put("message", "Login exitoso");
         response.put("user", usuario.getCorreo());
         response.put("role", usuario.getRole());
+        response.put("id", usuario.getId());
+
         response.put("token", token);
 
         return response;
@@ -79,4 +81,5 @@ public class UserService {
 
         return response;
     }
+ 
 }

@@ -1,18 +1,19 @@
 package com.example.BackendPrestamos.config;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import io.jsonwebtoken.Jwts;
+import java.io.IOException;
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import java.io.IOException;
-import java.util.Collections;
-import com.example.BackendPrestamos.config.JwtService;
+
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class FiltrosDeautenticacion extends OncePerRequestFilter {
@@ -52,6 +53,11 @@ public class FiltrosDeautenticacion extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             } catch (Exception e) {
+                if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+                    filterChain.doFilter(request, response);
+                        return;
+                }
+                    filterChain.doFilter(request, response);
                 System.out.println("Error validando token: " + e.getMessage());
             }
 

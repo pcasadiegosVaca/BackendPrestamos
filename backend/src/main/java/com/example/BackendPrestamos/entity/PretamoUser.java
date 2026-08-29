@@ -17,7 +17,7 @@ public class PretamoUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "id_user")
+    @Column(name = "idUser")
     private Long idUser;
     private Long Monto;
     private LocalDate PlazoDate;
