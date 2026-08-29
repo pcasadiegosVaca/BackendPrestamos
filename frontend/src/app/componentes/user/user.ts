@@ -40,6 +40,47 @@ export class User {
     get  getId(){
     return this.authService.getIdUser();
   }
+
+  ngOnInit() {
+    this.cargarPrestamos();
+  }
+  cargarPrestamos(){
+
+        const idUsuario = this.authService.getIdUser();
+
+        const tokenReal = this.authService.getToken();
+
+
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${tokenReal}`
+        });
+
+        this.http.get<any>(`http://localhost:8080/prestamos/buscarpretamos/${idUsuario}`, { headers }).subscribe({
+          next: (prestamoResponse) => {
+            console.log('¡Préstamos descargados con token!:', prestamoResponse);
+
+
+            this.authService.setPrestamos(prestamoResponse.data);
+            if(this.authService.obtenerRolDesdeToken() === 'ADMIN'){
+              alert(this.authService.obtenerRolDesdeToken());
+
+              this.router.navigate(['/admind']);
+            }else{
+              alert(this.authService.obtenerRolDesdeToken());
+
+              this.router.navigate(['/user']);
+
+            }
+          },
+          error: (err) => {
+
+            console.error('Error en el GET (revisa si el token expiró o la ruta cambió):', err);
+            this.router.navigate(['/user']);
+          }
+        });
+
+  }
+
  logout() {
     // 1. Borramos los datos del almacenamiento de la sesión
     sessionStorage.clear();

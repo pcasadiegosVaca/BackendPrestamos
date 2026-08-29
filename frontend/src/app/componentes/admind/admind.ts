@@ -18,7 +18,16 @@ export class Admind {
 get listaMisPrestamos(): any[] {
   return this.authService.getPrestamosnuevos();
 }
+get usuarioLogueado(): string | null {
+    return this.authService.getUser();
+}
+logout() {
+    // 1. Borramos los datos del almacenamiento de la sesión
+    sessionStorage.clear();
+    this.router.navigate(['/']);
+    // 2. Redirigimos al usuario a la pantalla de inicio de sesión
 
+  }
 ngOnInit() {
     this.cargarPrestamos();
   }

@@ -39,8 +39,17 @@ export class Login {
         this.authService.setToken(loginResponse.token);
         this.authService.setUser(loginResponse.user);
         this.authService.setIdUser(loginResponse.id);
+        if(this.authService.obtenerRolDesdeToken() === 'ADMIN'){
+              alert(this.authService.obtenerRolDesdeToken());
 
-        const idUsuario = loginResponse.id;
+              this.router.navigate(['/admind']);
+            }else{
+              alert(this.authService.obtenerRolDesdeToken());
+
+              this.router.navigate(['/user']);
+
+            }
+        /*const idUsuario = loginResponse.id;
 
         const tokenReal = loginResponse.token;
 
@@ -70,7 +79,7 @@ export class Login {
             console.error('Error en el GET (revisa si el token expiró o la ruta cambió):', err);
             this.router.navigate(['/user']);
           }
-        });
+        });*/
       },
       error: (err) => {
         console.error('Error en el login:', err);
