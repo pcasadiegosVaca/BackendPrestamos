@@ -1,30 +1,42 @@
-import { Injectable, signal } from '@angular/core';
-
+import { Injectable, Service, signal } from '@angular/core';
+import {ListPrestamoItem} from './listaprestamos'
+import { Login } from './login';
+import { jwtDecode } from 'jwt-decode';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // Guardamos el token en una variable en memoria RAM usando Signals
-  private token = signal<string | null>(null);
-  private userEmail = signal<string | null>(null);
-  private prestamosSignal = signal<any[]>([]);
+  private tokenSignal = signal<string | null>(null);
+  private prestamosSignal = signal<ListPrestamoItem[]>([]);
+  private userEmail = signal<any>(null);
+  private IdUser = signal<number | any>(null);
 
 
-  // Método simple para guardar el token
-  setToken(jwt: string) {
-    this.token.set(jwt);
+  setToken(token: string) {
+    this.tokenSignal.set(token);
+    sessionStorage.setItem('auth_token', token);
   }
 
-  // Método simple para obtener el token desde cualquier parte de la app
-  getToken(): string | null {
-    return this.token();
+  getToken() {
+    if (this.tokenSignal()) {
+      return this.tokenSignal();
+    }
+    return sessionStorage.getItem('auth_token');
+  }
+  setIdUser(id: string) {
+    this.IdUser.set(id);
+    sessionStorage.setItem('IdUser', id);
   }
 
-// En tu archivo login.services.ts
+  getIdUser(): any {
+    if (this.IdUser()) {
+     return this.IdUser();
+    }
+    return sessionStorage.getItem('IdUser');
+  }
 
 setUser(email: string) {
   this.userEmail.set(email);
-  // Guardamos una copia en el almacenamiento de la sesión
   sessionStorage.setItem('user', email);
 }
 
@@ -32,29 +44,42 @@ setUser(email: string) {
     if (this.userEmail()) {
       return this.userEmail();
     }
-    // Si la señal está vacía por la navegación, lee directo del almacenamiento
     return sessionStorage.getItem('user');
   }
- setPrestamos(lista: any[]) {
-    this.prestamosSignal.set(lista);
-    // Convertimos el arreglo a texto JSON para poder guardarlo en sessionStorage
-    sessionStorage.setItem('mis_prestamos', JSON.stringify(lista));
+  setPrestamos(lista: ListPrestamoItem[]) {
+
+    this.prestamosSignal.update((currentItems) => {
+      return [...currentItems, ...lista]; // Agrega el nuevo al final de la lista
+    });
+
   }
 
-  // 3. Recupera la lista completa (intenta desde la Signal, si no, va a sessionStorage)
-  getPrestamos(): any[] {
-    if (this.prestamosSignal().length > 0) {
-      return this.prestamosSignal();
-    }
+  setPrestamosnuevos(nuevosPrestamos: any[]) {
+  this.prestamosSignal.set(nuevosPrestamos);
+  sessionStorage.setItem('prestamos', JSON.stringify(nuevosPrestamos));
+}
+  getPrestamosnuevos() {
+    return this.prestamosSignal();
+}
 
-    // Si la señal se borró por refrescar la página, la recuperamos del almacenamiento
-    const prestamosGuardados = sessionStorage.getItem('mis_prestamos');
-    if (prestamosGuardados) {
-      const listaParseada = JSON.parse(prestamosGuardados);
-      this.prestamosSignal.set(listaParseada); // Rellenamos la Signal de nuevo
-      return listaParseada;
-    }
 
-    return []; // Retorna lista vacía si no hay nada
+
+  getPrestamos(): ListPrestamoItem[] {
+    return this.prestamosSignal();
+  }
+
+  obtenerRolDesdeToken(): string | null {
+    const token = sessionStorage.getItem('auth_token'); // Recuperas el token guardado
+    console.log(token);
+    if (!token) return null;
+    try {
+      const tokenDecodificado: any = jwtDecode(token);
+          console.log(tokenDecodificado.role);
+
+      return tokenDecodificado.role;
+    } catch (error) {
+      console.error("Error al desglosar el token", error);
+      return null;
+    }
   }
 }

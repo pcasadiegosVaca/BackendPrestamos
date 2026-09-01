@@ -3,6 +3,7 @@ package com.example.BackendPrestamos.dto;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +11,11 @@ import lombok.Setter;
 @Setter
 public class PrestamoDto {
     
-    private Long id_user;
+    private Long idUser;
     private Long monto;
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonProperty("plazo_date")
     private LocalDate plazoDate;
+    private String correo;
+
 }

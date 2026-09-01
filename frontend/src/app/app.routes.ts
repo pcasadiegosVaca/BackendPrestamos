@@ -9,6 +9,6 @@ export const routes: Routes = [
   { path: 'menu', component: MenuComponent },
   { path: 'admind', component: Admind },
   { path: 'user', component: User },
-  { path: 'login', component: Login },
+  { path: '', component: Login },
 
 ];

@@ -31,13 +31,11 @@ public class ControllerUser {
     @PostMapping("/crear")
     public Map<String, Object> crearUsuario(@RequestBody UserDto userDto) {
 
-        // Lógica para crear un préstamo
         try {
             Map<String, Object> response = service.createUser(userDto);
             response.put("message", "Usuario creado exitosamente");
             return response;
         } catch (Exception e) {
-            // Manejo de errores y mapeo a una respuesta HTTP adecuada
             return ErrorHttp.mapearError(e).getBody();
         }
 
@@ -49,7 +47,6 @@ public class ControllerUser {
             response.put("message", "Usuario logueado exitosamente");
             return response;
         } catch (Exception e) {
-            // Manejo de errores y mapeo a una respuesta HTTP adecuada
             return ErrorHttp.mapearError(e).getBody();
         }
     }
@@ -60,10 +57,10 @@ public class ControllerUser {
             response.put("message", "Usuarios obtenidos exitosamente");
             return response;
         } catch (Exception e) {
-            // Manejo de errores y mapeo a una respuesta HTTP adecuada
             return ErrorHttp.mapearError(e).getBody();
         }
     }
+
 
 
 

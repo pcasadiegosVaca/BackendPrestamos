@@ -1,5 +1,6 @@
 package com.example.BackendPrestamos.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,23 +23,25 @@ public class PrestamoUserService {
     }
 
     public Map<String, Object> savePrestamoUser(PrestamoDto prestamoUser) {
+        
         PretamoUser pretamoUserEntity = new PretamoUser();
+        pretamoUserEntity.setIdUser(prestamoUser.getIdUser());
         pretamoUserEntity.setMonto(prestamoUser.getMonto());
         pretamoUserEntity.setPlazoDate(prestamoUser.getPlazoDate());
-        pretamoUserEntity.setIdUser(prestamoUser.getId_user());
+        pretamoUserEntity.setCorreo(prestamoUser.getCorreo());
         pretamoUserEntity.setStatus("PENDING");
 
-        // Mapear los campos del DTO a la entidad.
         Repository.save(pretamoUserEntity);
         Map<String, Object> response = new java.util.HashMap<>();
-        response.put("message", "Prestamo creado exitosamente desde el service");
+        Map<String, Object> data = new java.util.HashMap<>();
+        response= buscarPrestamoUser(prestamoUser.getIdUser());
+
         return response;
     }
 
     public Map<String, Object> updatePrestamoUser(EditarStatus status) {
     Map<String, Object> response = new java.util.HashMap<>();
 
-    // 1. Validaciones de Estado
     if (status.getStatus() == null || status.getStatus().isEmpty()) {
         response.put("error", "El estado no puede estar vacío");
         return response;
@@ -50,7 +53,6 @@ public class PrestamoUserService {
         return response;
     }
 
-    // 2. Validaciones de Rol
     if (status.getRole() == null || status.getRole().isEmpty()) {
         response.put("error", "El rol no puede estar vacío");
         return response;
@@ -60,17 +62,13 @@ public class PrestamoUserService {
         return response;
     }
 
-    // 3. Búsqueda segura evitando duplicados usando 'findFirstByCorreo'
-    // Limpiamos espacios con .trim() por si se coló un espacio en blanco en Postman
-    String correoFiltro = status.getCorreo_user().trim(); 
-    
-    PretamoUser prestamo = Repository.findFirstByCorreo(correoFiltro)
+    PretamoUser prestamo = Repository.findById(status.getIdPrestamo())
             .orElseThrow(() -> new RuntimeException(
-                    "No se encontró el préstamo para el correo especificado: " + correoFiltro));
+                    "No se encontró el préstamo para el correo especificado: " + status.getIdPrestamo()));
 
-    // 4. Actualización del estado y guardado
     prestamo.setStatus(status.getStatus());
     Repository.save(prestamo);
+    response.put("data",getPrestamoByAll());
 
     response.put("message", "Prestamo actualizado exitosamente desde el service");
     return response;
@@ -78,7 +76,7 @@ public class PrestamoUserService {
 
     public Map<String, Object> buscarPrestamoUser(Long id) {
     Map<String, Object> response = new java.util.HashMap<>();
-        List<PretamoUser> listaPrestamos = Repository.findByIdUser(id); 
+    List<PretamoUser> listaPrestamos = (List<PretamoUser>) Repository.findByIdUser(id); 
 
 
     if (listaPrestamos.isEmpty()) {
@@ -88,8 +86,10 @@ public class PrestamoUserService {
             return response;
         }
     
-            List<Map<String, Object>> listaFiltrada = listaPrestamos.stream().map(prestamo -> {
+        List<Map<String, Object>> listaFiltrada = listaPrestamos.stream().map(prestamo -> {
         Map<String, Object> datosSimplificados =  new java.util.HashMap<>();
+        datosSimplificados.put("id", prestamo.getId());
+        datosSimplificados.put("idUser", prestamo.getIdUser());
         datosSimplificados.put("monto", prestamo.getMonto());   // Obtiene el Monto (ajusta al nombre de tu getter)
         datosSimplificados.put("status", prestamo.getStatus()); // Obtiene el Status (ajusta al nombre de tu getter)
         return datosSimplificados;
@@ -97,11 +97,17 @@ public class PrestamoUserService {
 
     response.put("status", "success");
     response.put("mensaje", "Préstamos recuperados correctamente.");
-    response.put("data", listaFiltrada); // Aquí viaja la lista con todos los préstamos
-    //response.put("status", listaPrestamos.get(5)); // Aquí viaja la lista con todos los préstamos
+    response.put("data", listaFiltrada);
 
     return response;
 
 
+    }
+    public Map<String, Object> getPrestamoByAll() {
+        Map<String, Object> response = new HashMap<>();
+        List<PretamoUser> pretamoUsers = Repository.findAll();
+        response.put("prestamos", pretamoUsers);
+ 
+        return response;
     }
 }

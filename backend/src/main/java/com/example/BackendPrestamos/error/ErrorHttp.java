@@ -7,10 +7,9 @@ import java.util.Map;
 
 public class ErrorHttp {
 
-    // Al agregar 'static', el método se puede usar en cualquier lugar sin hacer 'new'
     public static ResponseEntity<Map<String, Object>> mapearError(Exception e) {
         Map<String, Object> errorBody = new HashMap<>();
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // 500 por defecto
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         String mensaje = e.getMessage();
 
         if (e instanceof org.springframework.web.server.ResponseStatusException httpEx) {
