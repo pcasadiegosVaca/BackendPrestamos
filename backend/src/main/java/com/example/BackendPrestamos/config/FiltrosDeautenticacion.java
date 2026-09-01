@@ -37,14 +37,13 @@ public class FiltrosDeautenticacion extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             
-                        try {
-                // Sintaxis moderna para JJWT 0.12.x+
-                String email = Jwts.parser()            // 1. Iniciamos el parser
-                        .verifyWith(JwtService.SECRET_KEY) // 2. Usamos verifyWith en lugar de setSigningKey
-                        .build()                        // 3. Compilamos el validador (¡ESTO FALTABA!)
-                        .parseSignedClaims(token)       // 4. Procesamos el token firmado
-                        .getPayload()                   // 5. Obtenemos el cuerpo de datos
-                        .getSubject();                  // 6. Extraemos el usuario/email
+            try {
+                String email = Jwts.parser()
+                        .verifyWith(JwtService.SECRET_KEY)
+                        .build()
+                        .parseSignedClaims(token)
+                        .getPayload()
+                        .getSubject();
 
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UsernamePasswordAuthenticationToken authToken = 

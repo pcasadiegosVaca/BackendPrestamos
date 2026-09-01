@@ -31,19 +31,10 @@ public class PrestamoUserService {
         pretamoUserEntity.setCorreo(prestamoUser.getCorreo());
         pretamoUserEntity.setStatus("PENDING");
 
-        // Mapear los campos del DTO a la entidad.
         Repository.save(pretamoUserEntity);
         Map<String, Object> response = new java.util.HashMap<>();
         Map<String, Object> data = new java.util.HashMap<>();
         response= buscarPrestamoUser(prestamoUser.getIdUser());
-
-        //data.put("monto",Repository.getReferenceById(prestamoUser.getIdUser()));
-        //data.put("status",pretamoUserEntity.getStatus())
-
-       
-        //data.put("status",pretamoUserEntity.getStatus());
-       // response.put("message", "Prestamo creado exitosamente desde el service");
-        //response.put("data",data);
 
         return response;
     }
@@ -51,7 +42,6 @@ public class PrestamoUserService {
     public Map<String, Object> updatePrestamoUser(EditarStatus status) {
     Map<String, Object> response = new java.util.HashMap<>();
 
-    // 1. Validaciones de Estado
     if (status.getStatus() == null || status.getStatus().isEmpty()) {
         response.put("error", "El estado no puede estar vacío");
         return response;
@@ -63,7 +53,6 @@ public class PrestamoUserService {
         return response;
     }
 
-    // 2. Validaciones de Rol
     if (status.getRole() == null || status.getRole().isEmpty()) {
         response.put("error", "El rol no puede estar vacío");
         return response;
@@ -73,14 +62,10 @@ public class PrestamoUserService {
         return response;
     }
 
-    // 3. Búsqueda segura evitando duplicados usando 'findFirstByCorreo'
-    // Limpiamos espacios con .trim() por si se coló un espacio en blanco en Postman
-    
     PretamoUser prestamo = Repository.findById(status.getIdPrestamo())
             .orElseThrow(() -> new RuntimeException(
                     "No se encontró el préstamo para el correo especificado: " + status.getIdPrestamo()));
 
-    // 4. Actualización del estado y guardado
     prestamo.setStatus(status.getStatus());
     Repository.save(prestamo);
     response.put("data",getPrestamoByAll());
@@ -112,8 +97,7 @@ public class PrestamoUserService {
 
     response.put("status", "success");
     response.put("mensaje", "Préstamos recuperados correctamente.");
-    response.put("data", listaFiltrada); // Aquí viaja la lista con todos los préstamos
-    //response.put("status", listaPrestamos.get(5)); // Aquí viaja la lista con todos los préstamos
+    response.put("data", listaFiltrada);
 
     return response;
 

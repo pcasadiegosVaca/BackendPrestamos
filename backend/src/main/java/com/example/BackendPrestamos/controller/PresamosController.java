@@ -27,13 +27,11 @@ public class PresamosController {
 
     @PostMapping("/crear")
     public Map<String, Object> crearPrestamo(@RequestBody PrestamoDto prestamoDto) {
-        // Lógica para crear un préstamo
         try {
             Map<String, Object> response = service.savePrestamoUser(prestamoDto);
             response.put("message", "Prestamo creado exitosamente");
             return response;
         } catch (Exception e) {
-            // Manejo de errores y mapeo a una respuesta HTTP adecuada
             return ErrorHttp.mapearError(e).getBody();
         }
        
@@ -41,11 +39,9 @@ public class PresamosController {
 
     @PatchMapping("/actualizar")
     public Map<String, Object> actualizarPrestamo(@RequestBody EditarStatus status) {
-        // La ruta permanece protegida por JWT en SecurityConfig.
         try {
             return service.updatePrestamoUser(status);
         } catch (Exception e) {
-            // Manejo de errores y mapeo a una respuesta HTTP adecuada
             return ErrorHttp.mapearError(e).getBody();
         }
     }
@@ -55,11 +51,8 @@ public class PresamosController {
         try {
             return service.buscarPrestamoUser(id);
         } catch (Exception e) {
-            // Manejo de errores y mapeo a una respuesta HTTP adecuada
             return ErrorHttp.mapearError(e).getBody();
         }
-        
-        
     }
     @GetMapping("/ObtenerTodosPrestamos")
     public Map<String, Object> ObtenerTodosLosPrestamos() {
@@ -68,29 +61,8 @@ public class PresamosController {
             response.put("message", "Usuarios obtenidos exitosamente");
             return response;
         } catch (Exception e) {
-            // Manejo de errores y mapeo a una respuesta HTTP adecuada
             return ErrorHttp.mapearError(e).getBody();
         }
     }
-    /*private ResponseEntity<Map<String, Object>> mapearError(Exception e) {
-        Map<String, Object> errorBody = new java.util.HashMap<>();
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // 500 por defecto
-        String mensaje = e.getMessage();
-
-        // Identificar el tipo de excepción HTTP (Sintaxis moderna Java 14+)
-        if (e instanceof org.springframework.web.server.ResponseStatusException httpEx) {
-            status = HttpStatus.valueOf(httpEx.getStatusCode().value());
-            mensaje = httpEx.getReason();
-        } else if (e instanceof org.springframework.security.access.AccessDeniedException) {
-            status = HttpStatus.FORBIDDEN;
-            mensaje = "No tienes permisos para realizar esta acción.";
-        }
-
-        errorBody.put("status", status.value());
-        errorBody.put("error", status.getReasonPhrase());
-        errorBody.put("message", mensaje);
-
-        return ResponseEntity.status(status).body(errorBody);
-    }*/
 
 }

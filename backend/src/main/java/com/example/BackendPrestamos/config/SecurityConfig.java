@@ -1,6 +1,5 @@
 package com.example.BackendPrestamos.config;
 
-// 1. Asegúrate de importar tu filtro personalizado
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 2. Inyectamos el filtro de JWT que creamos en los pasos anteriores
     @Autowired
     private FiltrosDeautenticacion jwtAuthenticationFilter;
 
@@ -43,16 +41,9 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-                // 2. Desactivar CSRF específicamente para H2 (H2 lo necesita para enviar formularios)
-            //.csrf(csrf -> csrf
-             //   .ignoringRequestMatchers("/h2-console/**")
-            //)
-            // 3. Permitir que la consola de H2 se cargue dentro de los iframes del navegador
             .headers(headers -> headers
                .frameOptions(frameOptions -> frameOptions.sameOrigin())
             )
-            // 3. ¡ESTA ES LA LÍNEA CLAVE QUE FALTA!
-            // Le dice a Spring: "Antes de bloquear al usuario, pasa la petición por mi filtro de JWT"
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

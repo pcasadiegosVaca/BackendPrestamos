@@ -16,7 +16,7 @@ import com.example.BackendPrestamos.repository.UserRegistroRepository;
 public class UserService {
     @Autowired
     private UserRegistroRepository repository;
-    private final PasswordEncoder passwordEncoder; // <--- Provisto por Spring Security
+    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
     public UserService(UserRegistroRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService) {
@@ -34,12 +34,11 @@ public class UserService {
             new IllegalArgumentException("El role debe ser 'USER' o 'ADMIN'");
         }
         userEntity.setRole(userDto.getRole());
-        // Cifrar la contraseña antes de guardarla
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         userEntity.setPassword(encodedPassword);
         repository.save(userEntity);
         
-        String token = jwtService.generarToken(userDto.getCorreo(),userDto.getRole()); // Genera un token JWT para el usuario recién creado
+        String token = jwtService.generarToken(userDto.getCorreo(),userDto.getRole());
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Usuario creado exitosamente desde el service");
         response.put("token", token);
@@ -49,20 +48,17 @@ public class UserService {
     public Map<String, Object> loginUser( LoginDto loginDto) {
         Map<String, Object> response = new HashMap<>();
 
-// Opción B (Recomendada): Si no lo encuentra, lanza una excepción que frena el proceso
         UserRegistro usuario = repository.findByCorreo(loginDto.getCorreo())
-        .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el correo: " + loginDto.getCorreo())); // <-- Verifica que cierre con );
+        .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el correo: " + loginDto.getCorreo()));
 
         if (usuario == null) {
             response.put("error", "Usuario no encontrado");
             return response;
         }
-        // Verificar la contraseña
         if (!passwordEncoder.matches(loginDto.getPassword(), usuario.getPassword())) {
             response.put("error", "Contraseña incorrecta");
             return response;
         }
-        // Generar un token JWT para el usuario autenticado
         String token = jwtService.generarToken(usuario.getCorreo(),usuario.getRole());
         response.put("message", "Login exitoso");
         response.put("user", usuario.getCorreo());
